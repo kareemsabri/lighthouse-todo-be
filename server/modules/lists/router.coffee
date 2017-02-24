@@ -20,7 +20,7 @@ module.exports = ->
     .post mw.wrap(lists.addTodo)
 
   router.route "/:listId/todos/:todoId"
-    .patch mw.wrap(lists.updateTodo)
-    .delete mw.wrap(lists.deleteTodo)
+    .patch isMe(), mw.wrap(lists.updateTodo)
+    .delete isMe(), mw.wrap(lists.deleteTodo)
 
   return router

@@ -143,6 +143,7 @@ types:
                 type: Todo
       /{todoId}:
         patch:
+          securedBy: jwt
           description: edit a todo
           body:
             application/json:
@@ -156,4 +157,5 @@ types:
                 application/json:
                   type: Todo
         delete:
+          securedBy: jwt
           description: delete a todo
