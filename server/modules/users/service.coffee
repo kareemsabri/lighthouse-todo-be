@@ -45,8 +45,14 @@ module.exports = class UsersAPIService
     User = @req.db.models.User
     User.findOne query
       .then (user) ->
+        if not user then console.log 'user not found'
         if not user then throw new APIError.Unauthorized 'login incorrect'
         password = Password.encrypt password, Config.password.salt
         if password.hash isnt user.password_hash
+          console.log 'password does not match'
           throw new APIError.Unauthorized 'login incorrect'
         return user
+
+  genJWT: (user) ->
+    Auth.generateToken
+      userId: user.id

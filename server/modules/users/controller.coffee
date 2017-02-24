@@ -20,6 +20,12 @@ module.exports = new class UsersCtrl
     email = req.body.email
     password = req.body.password
     service.performEmailLogin email, password
+      .then (user) ->
+        if not user
+          throw new APIError.Unauthorized 'invalid credentials'
+        service.genJWT user
+          .then (token) ->
+            return user.toJSON token
 
   getLists: (req, res) ->
     List = req.db.models.List
