@@ -1,0 +1,159 @@
+#%RAML 1.0
+title: Todo List
+version: v1
+baseUri: https://lighthouse-todos.herokuapp.com/api/v1
+securitySchemes:
+  basic:
+    type: Basic Authentication
+  jwt:
+    type: x-custom
+    describedBy:
+      headers:
+        Authorization:
+          description: value is "JWT <token>"
+          type: string
+types:
+  User:
+    type: object
+    properties:
+      id: number
+      email: string
+      password?: string
+      first_name?: string
+      last_name?: string
+      token?: string
+      updated_at: datetime
+      created_at: datetime
+  List:
+    type: object
+    properties:
+      id: number
+      name: string
+      user_id: number
+      todos?: []
+      updated_at: datetime
+      created_at: datetime
+  Todo:
+    type: object
+    properties:
+      id: number
+      name: string
+      completed: boolean
+      list_id: number
+      updated_at: datetime
+      created_at: datetime
+
+/users:
+  post:
+    description: Register a user
+    body:
+      application/json:
+        properties:
+          email: string
+          password: string
+    responses:
+      201:
+        body:
+          application/json:
+            type: User
+  /tokens:
+    post:
+      description: Login a user
+      body:
+        application/json:
+          type: object
+          properties:
+            email: string
+            password: string
+      responses:
+        201:
+          body:
+            application/json:
+              type: User
+  /{userId}:
+    patch:
+      description: Update a user
+      body:
+        application/json:
+          type: object
+          properties:
+            first_name?: string
+            last_name?: string
+      responses:
+        200:
+          body:
+            application/json:
+              type: User
+    /lists:
+      get:
+        description: get a user's lists
+        responses:
+          200:
+            body:
+              application/json:
+                type: List[]
+              
+/lists:
+  post:
+    description: create a list
+    body:
+      application/json:
+        type: object
+        properties:
+          name: string
+          user_id: number    
+    responses:
+      200:
+        body:
+          application/json:
+            type: List
+
+  /{listId}:
+    get:
+      description: get a list
+      responses:
+        200:
+          body:
+            application/json:
+              type: List[]
+    patch:
+      description: rename a list
+      body:
+        application/json:
+          type: object
+          properties:
+            name?: string
+      responses:
+        200:
+          body:
+            application/json:
+              type: List
+    /todos:
+      post:
+        description: add a todo
+        body:
+          application/json:
+            type: object
+            properties:
+              name: string
+        responses:
+          200:
+            body:
+              application/json:
+                type: Todo
+      /{todoId}:
+        patch:
+          description: edit a todo
+          body:
+            application/json:
+              type: object
+              properties:
+                name: string
+                completed: boolean
+          responses:
+            200:
+              body:
+                application/json:
+                  type: Todo
+        delete:
+          description: delete a todo
