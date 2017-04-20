@@ -14,12 +14,12 @@ module.exports = new class UsersCtrl
     service.validateEmailRegistration req.body
       .then (values) ->
         service.createEmailUser values
-          .then (user)
-          if not user
-            throw new APIError.Unauthorized 'invalid credentials'
-          service.genJWT user
-          .then (token) ->
-            return user.toJSON token
+          .then (user) ->
+            if not user
+              throw new APIError.Unauthorized 'invalid credentials'
+            service.genJWT user
+            .then (token) ->
+              return user.toJSON token
 
   login: (req, res) ->
     service = new UserSvc req
